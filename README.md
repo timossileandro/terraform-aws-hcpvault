@@ -52,7 +52,7 @@ It can be taken for the following scenarios:
 
 2. Terraform: https://developer.hashicorp.com/terraform/install 
 
-3. Python: https://www.python.org/downloads/ 
+3. Python 3.12: https://www.python.org/downloads/ 
 
 4. AWS Account: https://aws.amazon.com/
 

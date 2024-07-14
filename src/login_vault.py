@@ -17,12 +17,6 @@ def configure_logging():
   logging.basicConfig(level=numeric_level)
 
 
-def get_iam_identity():
-    sts_client = boto3.client('sts')
-    identity = sts_client.get_caller_identity()
-    return identity
-
-
 def create_signed_request(url, region, service, body=''):
     session = botocore.session.get_session()
     credentials = session.get_credentials().get_frozen_credentials()
@@ -43,8 +37,6 @@ def create_signed_request(url, region, service, body=''):
 
 def main_login():
     try:
-        iam_identity = get_iam_identity()
-
         vault_url = f'{os.environ.get('VAULT_ADDR')}/v1/auth/aws/login'
         vault_region = os.environ.get('AWS_REGION')
         vault_service = 'sts'
@@ -80,13 +72,10 @@ def main_login():
             return client_token
         else:
             raise Exception(f"Unknown response status: {response.status_code}")
-            
+              
     except requests.exceptions.RequestException as e:
         logging.error(f"[ERROR] Failed login in Vault!", exc_info=1)
-        raise Exception("Failed login in Vault!")
-    except Exception as e:
-        logging.error(f"[ERROR] Unknown exception occured. {e}", exc_info=1)
-        raise Exception(f"Unknown exception occured. {e}")
+        logging.error(e)
         return {
             'statusCode': 500,
             'body': json.dumps(f"An error occurred: {e}")
